@@ -23,12 +23,9 @@ public class SwaggerConfiguration {
                                         new SecurityScheme()
                                                 .type(SecurityScheme.Type.HTTP)
                                                 .scheme("bearer").bearerFormat("jti"))
-                                .addSecuritySchemes("basicAuth",
-                                        new SecurityScheme()
-                                                .type(SecurityScheme.Type.HTTP)
-                                                .scheme("basic"))
+
                 )
-                .security(List.of(new SecurityRequirement().addList("basicAuth").addList("bearerAuth")))
+                .security(List.of(new SecurityRequirement().addList("bearerAuth")))
                 .info(new Info().title("Book Store").version("V1"));
     }
 }
