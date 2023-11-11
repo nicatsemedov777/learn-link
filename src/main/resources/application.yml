@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${LEARN_LINK_DB_HOST}:${LEARN_LINK_DB_PORT}/${LEARN_LINK_DB_NAME}?currentSchema=${LEARN_LINK_DB_SCHEMA}
+    username: ${LEARN_LINK_DB_USERNAME}
+    password: ${LEARN_LINK_DB_PASSWORD}
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: ${LEARN_LINK_DB_SCHEMA}
+    hibernate:
+      ddl-auto: none
+    open-in-view:
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+    default-schema: ${LEARN_LINK_DB_SCHEMA}
+    liquibase-schema: ${LEARN_LINK_DB_SCHEMA}
+    enabled: true
