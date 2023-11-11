@@ -1,6 +1,7 @@
 package az.iktlab.learnlink.error;
 
 
+import az.iktlab.learnlink.error.exception.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -23,5 +24,9 @@ public class GlobalExceptionHandler extends RuntimeException {
                 .collect(Collectors.toList());
 
         return buildErrorResponse(messages, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException authenticationException) {
+    return buildErrorResponse(authenticationException.getMessage(),HttpStatus.UNAUTHORIZED);
     }
 }
