@@ -2,6 +2,9 @@ package az.iktlab.learnlink.error;
 
 
 import az.iktlab.learnlink.error.exception.AuthenticationException;
+import az.iktlab.learnlink.error.exception.OTPSessionExpiredException;
+import az.iktlab.learnlink.error.exception.ResourceAlreadyExistsException;
+import az.iktlab.learnlink.error.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -28,5 +31,19 @@ public class GlobalExceptionHandler extends RuntimeException {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException authenticationException) {
     return buildErrorResponse(authenticationException.getMessage(),HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(OTPSessionExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleOTPSessionExpiredException(OTPSessionExpiredException exception) {
+        return buildErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleResourceAlreadyExistsException(ResourceAlreadyExistsException exception) {
+        return buildErrorResponse(exception.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
+        return buildErrorResponse(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

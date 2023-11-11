@@ -1,7 +1,7 @@
 package az.iktlab.learnlink.security;
 
 import az.iktlab.learnlink.constants.SecurityConstants;
-import az.iktlab.learnlink.model.JwtToken;
+import az.iktlab.learnlink.model.jwt.JwtToken;
 import az.iktlab.learnlink.util.DateHelper;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
