@@ -1,4 +1,4 @@
-package az.iktlab.learnlink.model;
+package az.iktlab.learnlink.model.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
