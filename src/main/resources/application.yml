@@ -16,3 +16,25 @@ spring:
     default-schema: ${LEARN_LINK_DB_SCHEMA}
     liquibase-schema: ${LEARN_LINK_DB_SCHEMA}
     enabled: true
+
+security:
+  auth:
+    whitelist: >
+      /swagger-resources,
+      /swagger-resources/**,
+      /configuration/ui,  
+      /configuration/security,
+      /swagger-ui.html,
+      /webjars/**,
+      /api/public/**,
+      /v3/api-docs/**,
+      /v3/api-docs,
+      /swagger-ui/**,
+      /v2/api-docs,
+      /api/v1/public/**,
+      /ws-registration/**,
+      /api/v1/users/signin,
+      /api/v1/users/signup
+
+  jwt:
+    secret-key: ${LEARN_LINK_JWT_SECRET_KEY}
