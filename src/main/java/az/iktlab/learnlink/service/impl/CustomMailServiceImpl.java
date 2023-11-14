@@ -25,4 +25,15 @@ public class CustomMailServiceImpl implements CustomMailService {
 
         mailSender.send(message);
     }
+
+    @Override
+    public void sendNewCourseNotification(String[] to, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(securityConstants.getEmail());
+        message.setTo(to);
+        message.setText(body);
+        message.setSubject("The teacher you subscribe to on Learn-Link has shared a new course");
+
+        mailSender.send(message);
+    }
 }

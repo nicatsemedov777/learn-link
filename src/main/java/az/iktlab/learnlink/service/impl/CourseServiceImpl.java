@@ -14,9 +14,11 @@ import az.iktlab.learnlink.repository.CourseEnrollmentRepository;
 import az.iktlab.learnlink.repository.CourseRepository;
 import az.iktlab.learnlink.repository.UserRepository;
 import az.iktlab.learnlink.service.CourseService;
+import az.iktlab.learnlink.service.CustomMailService;
 import az.iktlab.learnlink.specification.CourseSpecification;
 import az.iktlab.learnlink.util.DateHelper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -34,13 +36,32 @@ public class CourseServiceImpl implements CourseService {
     private final UserRepository userRepository;
     private final CourseResponseConverter courseResponseConverter;
     private final CourseEnrollmentRepository courseEnrollmentRepository;
+    private final CustomMailService mailService;
 
     @Override
     public CourseCreateResponse createCourse(CourseCreateRequest createRequest, Principal principal) {
         User user = userRepository.findById(principal.getName()).orElseThrow(ResourceNotFoundException::new);
         Course course = buildCourse(createRequest, user);
         courseRepository.save(course);
+
+        List<User> users = courseEnrollmentRepository.getAllUserByAuthorId(principal.getName())
+                .orElseThrow(ResourceNotFoundException::new);
+
+        if (CollectionUtils.isNotEmpty(users)) {
+            String[] to = getEmailsFromListOfUsers(users);
+            mailService.sendNewCourseNotification(to,
+                    String.format("Author %s published new course : %s", user.getUsername(), course.getName()));
+        }
+
         return getCourseCreateResponse(course);
+    }
+
+    private static String[] getEmailsFromListOfUsers(List<User> users) {
+        String[] to = new String[users.size()];
+        for (int i = 0; i < users.size(); i++) {
+            to[i] = users.get(i).getEmail();
+        }
+        return to;
     }
 
     @Override
@@ -65,18 +86,18 @@ public class CourseServiceImpl implements CourseService {
                 new ResourceNotFoundException("There is no user with this userId."));
 
         if (checkBalance(course, student))
-            return getBuyResponse(courseId, student,"You do not have enough balance to purchase the course");
+            return getBuyResponse(courseId, student, "You do not have enough balance to purchase the course");
 
         CourseEnrollment courseEnrollment = builtCourseEnrollment(course, student);
         courseEnrollmentRepository.save(courseEnrollment);
         userRepository.save(student);
-        return getBuyResponse(courseId, student,"You have successfully purchase the course");
+        return getBuyResponse(courseId, student, "You have successfully purchase the course");
     }
 
     @Override
     public List<CourseResponse> getAllOwnCreatedCourses(Principal principal) {
-       List<Course> courses = courseRepository.findAllByTeacherId(principal.getName())
-               .orElseThrow(ResourceNotFoundException::new);
+        List<Course> courses = courseRepository.findAllByTeacherId(principal.getName())
+                .orElseThrow(ResourceNotFoundException::new);
         return courses
                 .stream()
                 .map(courseResponseConverter)
@@ -84,7 +105,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
 
-    private static CourseBuyResponse getBuyResponse(String courseId, User student,String message) {
+    private static CourseBuyResponse getBuyResponse(String courseId, User student, String message) {
         return CourseBuyResponse.builder()
                 .courseId(courseId)
                 .balance(student.getBalance())
