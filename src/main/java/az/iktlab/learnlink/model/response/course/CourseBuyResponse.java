@@ -11,10 +11,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CourseResponse {
+public class CourseBuyResponse {
+    private BigDecimal balance;
     private String courseId;
-    private String name;
-    private String subject;
-    private BigDecimal price;
-    private Long createDate;
+    private String message;
 }
