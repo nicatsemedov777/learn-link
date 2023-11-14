@@ -11,11 +11,11 @@ public class CourseResponseConverter implements Function<Course, CourseResponse>
     @Override
     public CourseResponse apply(Course course) {
         return CourseResponse.builder()
+                .courseId(course.getId())
                 .name(course.getName())
                 .price(course.getPrice())
                 .createDate(course.getCreateDate().getTime())
                 .subject(course.getSubject())
-
                 .build();
     }
 }

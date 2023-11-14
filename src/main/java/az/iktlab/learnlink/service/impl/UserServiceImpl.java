@@ -1,6 +1,8 @@
 package az.iktlab.learnlink.service.impl;
 
 
+import az.iktlab.learnlink.converter.CourseResponseConverter;
+import az.iktlab.learnlink.entity.Course;
 import az.iktlab.learnlink.entity.OTPSession;
 import az.iktlab.learnlink.entity.Role;
 import az.iktlab.learnlink.entity.User;
@@ -13,6 +15,8 @@ import az.iktlab.learnlink.model.otp.UserRecoverAccountOTPRequest;
 import az.iktlab.learnlink.model.otp.UserRecoverAccountRequest;
 import az.iktlab.learnlink.model.request.UserSignInRequest;
 import az.iktlab.learnlink.model.request.UserSignUpRequest;
+import az.iktlab.learnlink.model.response.course.CourseResponse;
+import az.iktlab.learnlink.repository.CourseEnrollmentRepository;
 import az.iktlab.learnlink.repository.OTPSessionRepository;
 import az.iktlab.learnlink.repository.RoleRepository;
 import az.iktlab.learnlink.repository.UserRepository;
@@ -29,7 +33,9 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +46,8 @@ public class UserServiceImpl implements UserService {
     private final JWTProvider jwtProvider;
     private final OTPSessionRepository otpSessionRepository;
     private final CustomMailService mailService;
+    private final CourseEnrollmentRepository courseEnrollmentRepository;
+    private final CourseResponseConverter courseResponseConverter;
 
 
     @Override
@@ -108,8 +116,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public BigDecimal getBalance(Principal principal) {
         return userRepository.findBalanceById(principal.getName()).getBalance();
-
     }
+
+    @Override
+    public List<CourseResponse> getAllCourses(Principal principal) {
+        List<Course> courses = courseEnrollmentRepository.getAllCoursesByStudentId(principal.getName()).orElseThrow(() ->
+                        new ResourceNotFoundException("Course not found in this student"));
+
+
+       return courses.stream()
+                .map(courseResponseConverter)
+                .collect(Collectors.toList());
+    }
+
+
 
     private void checkOtpSessionIsExpired(Date createDate) {
         Calendar now = Calendar.getInstance();

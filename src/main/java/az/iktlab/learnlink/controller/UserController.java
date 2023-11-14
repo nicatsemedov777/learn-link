@@ -3,6 +3,7 @@ package az.iktlab.learnlink.controller;
 import az.iktlab.learnlink.model.jwt.JwtToken;
 import az.iktlab.learnlink.model.request.UserSignInRequest;
 import az.iktlab.learnlink.model.request.UserSignUpRequest;
+import az.iktlab.learnlink.model.response.course.CourseResponse;
 import az.iktlab.learnlink.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMax;
@@ -10,10 +11,12 @@ import jakarta.validation.constraints.DecimalMin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 import static az.iktlab.learnlink.util.ResponseBuilder.buildResponse;
 
@@ -47,5 +50,10 @@ public class UserController {
     @GetMapping("/balance")
     public ResponseEntity<BigDecimal> getBalance(Principal principal) {
         return buildResponse(userService.getBalance(principal));
+    }
+
+    @GetMapping("/courses")
+    public ResponseEntity<List<CourseResponse>> getAllCourses(Principal principal) {
+        return buildResponse(userService.getAllCourses(principal));
     }
 }
