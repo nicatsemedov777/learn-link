@@ -2,6 +2,7 @@ package az.iktlab.learnlink.controller;
 
 import az.iktlab.learnlink.model.request.course.CourseCreateRequest;
 import az.iktlab.learnlink.model.request.course.CourseFilter;
+import az.iktlab.learnlink.model.response.course.CourseBuyResponse;
 import az.iktlab.learnlink.model.response.course.CourseCreateResponse;
 import az.iktlab.learnlink.model.response.course.CourseResponse;
 import az.iktlab.learnlink.service.CourseService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 import static az.iktlab.learnlink.util.ResponseBuilder.buildResponse;
 
@@ -35,5 +37,17 @@ public class CourseController {
                                                               @ParameterObject Pageable pageable,
                                                               Principal principal) {
         return buildResponse(courseService.getCoursePage(courseFilter, pageable, principal));
+    }
+
+    @PostMapping("/{courseId}/buy")
+    public ResponseEntity<CourseBuyResponse> buyCourse(@PathVariable String courseId,
+                                                       Principal principal) {
+        return buildResponse(courseService.buyCourse(courseId,principal));
+    }
+
+    @GetMapping("/teacher/courses")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    public ResponseEntity<List<CourseResponse>> getAllOwnCreatedCourses(Principal principal) {
+        return buildResponse(courseService.getAllOwnCreatedCourses(principal));
     }
 }

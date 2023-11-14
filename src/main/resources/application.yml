@@ -45,7 +45,10 @@ security:
       /ws-registration/**,
       /api/v1/users/signin,
       /api/v1/users/signup
-
-
   jwt:
     secret-key: ${LEARN_LINK_JWT_SECRET_KEY}
+
+
+model: ${LEARN_LINK_AI_MODEL}
+apiUrl: ${LEARN_LINK_AI_API_URL}
+apiKey: ${LEARN_LINK_AI_API_KEY}
