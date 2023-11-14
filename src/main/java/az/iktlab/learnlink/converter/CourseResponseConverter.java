@@ -3,7 +3,6 @@ package az.iktlab.learnlink.converter;
 import az.iktlab.learnlink.entity.Course;
 import az.iktlab.learnlink.model.response.course.CourseResponse;
 import org.springframework.stereotype.Component;
-
 import java.util.function.Function;
 
 @Component
