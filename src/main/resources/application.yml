@@ -46,5 +46,6 @@ security:
       /api/v1/users/signin,
       /api/v1/users/signup
 
+
   jwt:
     secret-key: ${LEARN_LINK_JWT_SECRET_KEY}
