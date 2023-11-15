@@ -6,7 +6,7 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
 
-    <changeSet id="2023-11-11-create_users_table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-create_users_table" author="Nuraya Eminli">
         <createTable tableName="users">
             <column name="id" type="char(32)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -20,7 +20,7 @@
         </createTable>
     </changeSet>
     
-    <changeSet id="2023-11-11-create_roles_table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-create_roles_table" author="Nuraya Eminli">
         <createTable tableName="roles">
             <column name="id" type="char(32)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -29,7 +29,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2023-11-11-create_user_roles_table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-create_user_roles_table" author="Nuraya Eminli">
         <createTable tableName="user_roles">
             <column name="role_id" type="char(32)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -40,7 +40,7 @@
         </createTable>
     </changeSet>
 
-        <changeSet id="2023-11-11-create_course-table" author="Nuraya Eminli">
+        <changeSet id="2023-11-15-create_course-table" author="Nuraya Eminli">
             <createTable tableName="courses">
                 <column name="id" type="char(32)">
                     <constraints primaryKey="true" nullable="false"/>
@@ -59,7 +59,7 @@
 
 
     
-    <changeSet id="2023-11-11-create-course-enrollments-table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-create-course-enrollments-table" author="Nuraya Eminli">
         <createTable tableName="course_enrollments">
             <column name="id" type="char(32)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -81,13 +81,13 @@
                                  constraintName="fk_course_teacher"/>
     </changeSet>
 
-    <changeSet id="2023-11-11-add-is-deleted-column-to-users-table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-add-is-deleted-column-to-users-table" author="Nuraya Eminli">
         <addColumn tableName="users">
             <column name="is_deleted" type="bool"/>
         </addColumn>
     </changeSet>
 
-    <changeSet id="2023-11-11-create_otp_sessions_table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-create_otp_sessions_table" author="Nuraya Eminli">
         <createTable tableName="otp_sessions">
             <column name="id" type="char(32)">
                 <constraints nullable="false" primaryKey="true"/>
@@ -99,7 +99,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2023-11-11-add-is-deleted-column-courses-table" author="Nuraya Eminli">
+    <changeSet id="2023-11-15-add-is-deleted-column-courses-table" author="Nuraya Eminli">
         <addColumn tableName="courses">
             <column name="is_deleted" type="bool"/>
         </addColumn>
