@@ -5,27 +5,27 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="2023-11-11-insert_user_with_ADMIN_role" author="Samadov Nicat">
+    <changeSet id="2023-11-11-insert_user_with_ADMIN_role" author="Nuraya Eminli">
         <insert tableName="users">
             <column name="id" value="6cd146d118af4126bf1b02730813b4a3"/>
-            <column name="create_date" value="2023-10-15 18:29:38.111000"/>
-            <column name="username" value="Nixon"/>
-            <column name="email" value="smdovn42@gmail.com"/>
-            <column name="born_date" value="2003-12-25 18:29:38.111000"/>
+            <column name="create_date" value="2023-11-7 18:29:38.111000"/>
+            <column name="username" value="neminli"/>
+            <column name="email" value="nurayaeminli@gmail.com"/>
+            <column name="born_date" value="2003-09-15 18:29:38.111000"/>
             <column name="balance" value="1000"/>
             <column name="password" value="$2a$08$Uo8mqGIF35Gt4UOEoORq0OyI4o396EHrFxL6CSjJBdQENvCoVR6CK"/>
             <column name="is_deleted" value="false"/>
         </insert>
     </changeSet>
 
-    <changeSet id="2023-11-11-insert_ADMIN_role" author="Samadov Nicat">
+    <changeSet id="2023-11-11-insert_ADMIN_role" author="Nuraya Eminli">
         <insert tableName="roles">
             <column name="id" value="ed7224d8cec34fda89e963eb70f799e6"/>
             <column name="name" value="ADMIN"/>
         </insert>
     </changeSet>
     
-    <changeSet id="2023-11-11-insert_user_role_record_for_ADMIN" author="Samadov Nicat">
+    <changeSet id="2023-11-11-insert_user_role_record_for_ADMIN" author="Nuraya Eminli">
         <insert tableName="user_roles">
             <column name="user_id" value="6cd146d118af4126bf1b02730813b4a3"/>
             <column name="role_id" value="ed7224d8cec34fda89e963eb70f799e6"/>
@@ -33,14 +33,14 @@
     </changeSet>
 
 
-    <changeSet id="2023-11-11-insert_STUDENT_role" author="Samadov Nicat">
+    <changeSet id="2023-11-11-insert_STUDENT_role" author="Nuraya Eminli">
         <insert tableName="roles">
             <column name="id" value="c500da5ec72d4750a77dd66da908577a"/>
             <column name="name" value="STUDENT"/>
         </insert>
     </changeSet>
 
-    <changeSet id="2023-11-11-insert_TEACHER_role" author="Samadov Nicat">
+    <changeSet id="2023-11-11-insert_TEACHER_role" author="Nuraya Eminli">
         <insert tableName="roles">
             <column name="id" value="e86fc31ff87042ca8f2edb889a79997e"/>
             <column name="name" value="TEACHER"/>
