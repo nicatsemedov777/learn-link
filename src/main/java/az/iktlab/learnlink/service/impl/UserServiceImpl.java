@@ -1,6 +1,7 @@
 package az.iktlab.learnlink.service.impl;
 
 
+import az.iktlab.learnlink.configuration.CustomEventPublisher;
 import az.iktlab.learnlink.converter.CourseResponseConverter;
 import az.iktlab.learnlink.entity.Course;
 import az.iktlab.learnlink.entity.OTPSession;
@@ -10,6 +11,7 @@ import az.iktlab.learnlink.error.exception.AuthenticationException;
 import az.iktlab.learnlink.error.exception.OTPSessionExpiredException;
 import az.iktlab.learnlink.error.exception.ResourceAlreadyExistsException;
 import az.iktlab.learnlink.error.exception.ResourceNotFoundException;
+import az.iktlab.learnlink.event.OTPEvent;
 import az.iktlab.learnlink.model.jwt.JwtToken;
 import az.iktlab.learnlink.model.otp.UserRecoverAccountOTPRequest;
 import az.iktlab.learnlink.model.otp.UserRecoverAccountRequest;
@@ -21,7 +23,6 @@ import az.iktlab.learnlink.repository.OTPSessionRepository;
 import az.iktlab.learnlink.repository.RoleRepository;
 import az.iktlab.learnlink.repository.UserRepository;
 import az.iktlab.learnlink.security.JWTProvider;
-import az.iktlab.learnlink.service.CustomMailService;
 import az.iktlab.learnlink.service.UserService;
 import az.iktlab.learnlink.util.DateHelper;
 import az.iktlab.learnlink.validator.OTPGenerator;
@@ -45,9 +46,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTProvider jwtProvider;
     private final OTPSessionRepository otpSessionRepository;
-    private final CustomMailService mailService;
     private final CourseEnrollmentRepository courseEnrollmentRepository;
     private final CourseResponseConverter courseResponseConverter;
+    private final CustomEventPublisher eventPublisher;
 
 
     @Override
@@ -85,8 +86,14 @@ public class UserServiceImpl implements UserService {
 
         OTPSession otpSession = createOTPSession(user);
         otpSessionRepository.save(otpSession);
+        eventPublisher.publishEvent(buildOTPEvent(user, otpSession));
+    }
 
-        mailService.sendOTPMail(userRecoverAccountRequest.getEmail(), otpSession.getOtpCode());
+    private static OTPEvent buildOTPEvent(User user, OTPSession otpSession) {
+        return OTPEvent.builder()
+                .email(user.getEmail())
+                .otpCode(otpSession.getOtpCode())
+                .build();
     }
 
     @Override
@@ -121,14 +128,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<CourseResponse> getAllCourses(Principal principal) {
         List<Course> courses = courseEnrollmentRepository.getAllCoursesByStudentId(principal.getName()).orElseThrow(() ->
-                        new ResourceNotFoundException("Course not found in this student"));
+                new ResourceNotFoundException("Course not found in this student"));
 
 
-       return courses.stream()
+        return courses.stream()
                 .map(courseResponseConverter)
                 .collect(Collectors.toList());
     }
-
 
 
     private void checkOtpSessionIsExpired(Date createDate) {

@@ -1,10 +1,12 @@
 package az.iktlab.learnlink.service.impl;
 
+import az.iktlab.learnlink.configuration.CustomEventPublisher;
 import az.iktlab.learnlink.converter.CourseResponseConverter;
 import az.iktlab.learnlink.entity.Course;
 import az.iktlab.learnlink.entity.CourseEnrollment;
 import az.iktlab.learnlink.entity.User;
 import az.iktlab.learnlink.error.exception.ResourceNotFoundException;
+import az.iktlab.learnlink.event.NewCourseNotificationEvent;
 import az.iktlab.learnlink.model.request.course.CourseCreateRequest;
 import az.iktlab.learnlink.model.request.course.CourseFilter;
 import az.iktlab.learnlink.model.response.course.CourseBuyResponse;
@@ -14,7 +16,6 @@ import az.iktlab.learnlink.repository.CourseEnrollmentRepository;
 import az.iktlab.learnlink.repository.CourseRepository;
 import az.iktlab.learnlink.repository.UserRepository;
 import az.iktlab.learnlink.service.CourseService;
-import az.iktlab.learnlink.service.CustomMailService;
 import az.iktlab.learnlink.specification.CourseSpecification;
 import az.iktlab.learnlink.util.DateHelper;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,8 @@ public class CourseServiceImpl implements CourseService {
     private final UserRepository userRepository;
     private final CourseResponseConverter courseResponseConverter;
     private final CourseEnrollmentRepository courseEnrollmentRepository;
-    private final CustomMailService mailService;
+
+    private final CustomEventPublisher eventPublisher;
 
     @Override
     public CourseCreateResponse createCourse(CourseCreateRequest createRequest, Principal principal) {
@@ -49,11 +51,17 @@ public class CourseServiceImpl implements CourseService {
 
         if (CollectionUtils.isNotEmpty(users)) {
             String[] to = getEmailsFromListOfUsers(users);
-            mailService.sendNewCourseNotification(to,
-                    String.format("Author %s published new course : %s", user.getUsername(), course.getName()));
+            eventPublisher.publishEvent(buildNewCourseNotificationEvent(course, to));
         }
-
         return getCourseCreateResponse(course);
+    }
+
+    private static NewCourseNotificationEvent buildNewCourseNotificationEvent(Course course, String[] to) {
+        return NewCourseNotificationEvent.builder()
+                .courseName(course.getName())
+                .authorName(course.getTeacher().getUsername())
+                .emails(to)
+                .build();
     }
 
     private static String[] getEmailsFromListOfUsers(List<User> users) {
