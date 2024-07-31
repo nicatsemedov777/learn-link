@@ -6,7 +6,6 @@ import az.iktlab.learnlink.entity.Course;
 import az.iktlab.learnlink.entity.CourseEnrollment;
 import az.iktlab.learnlink.entity.User;
 import az.iktlab.learnlink.error.exception.ResourceNotFoundException;
-import az.iktlab.learnlink.event.NewCourseNotificationEvent;
 import az.iktlab.learnlink.model.request.course.CourseCreateRequest;
 import az.iktlab.learnlink.model.request.course.CourseFilter;
 import az.iktlab.learnlink.model.response.course.CourseBuyResponse;
@@ -19,7 +18,6 @@ import az.iktlab.learnlink.service.CourseService;
 import az.iktlab.learnlink.specification.CourseSpecification;
 import az.iktlab.learnlink.util.DateHelper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -46,31 +44,9 @@ public class CourseServiceImpl implements CourseService {
         Course course = buildCourse(createRequest, user);
         courseRepository.save(course);
 
-        List<User> users = courseEnrollmentRepository.getAllUserByAuthorId(principal.getName())
-                .orElseThrow(ResourceNotFoundException::new);
-
-        if (CollectionUtils.isNotEmpty(users)) {
-            String[] to = getEmailsFromListOfUsers(users);
-            eventPublisher.publishEvent(buildNewCourseNotificationEvent(course, to));
-        }
         return getCourseCreateResponse(course);
     }
 
-    private static NewCourseNotificationEvent buildNewCourseNotificationEvent(Course course, String[] to) {
-        return NewCourseNotificationEvent.builder()
-                .courseName(course.getName())
-                .authorName(course.getTeacher().getUsername())
-                .emails(to)
-                .build();
-    }
-
-    private static String[] getEmailsFromListOfUsers(List<User> users) {
-        String[] to = new String[users.size()];
-        for (int i = 0; i < users.size(); i++) {
-            to[i] = users.get(i).getEmail();
-        }
-        return to;
-    }
 
     @Override
     public Page<CourseResponse> getCoursePage(CourseFilter courseFilter, Pageable pageable, Principal principal) {

@@ -11,7 +11,6 @@ import az.iktlab.learnlink.error.exception.AuthenticationException;
 import az.iktlab.learnlink.error.exception.OTPSessionExpiredException;
 import az.iktlab.learnlink.error.exception.ResourceAlreadyExistsException;
 import az.iktlab.learnlink.error.exception.ResourceNotFoundException;
-import az.iktlab.learnlink.event.OTPEvent;
 import az.iktlab.learnlink.model.jwt.JwtToken;
 import az.iktlab.learnlink.model.otp.UserRecoverAccountOTPRequest;
 import az.iktlab.learnlink.model.otp.UserRecoverAccountRequest;
@@ -69,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public JwtToken signIn(UserSignInRequest userSignInRequest) {
         User user = userRepository.findByEmailAndIsDeletedFalse(userSignInRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with this email:"
-                        + userSignInRequest.getEmail()));
+                                                                 + userSignInRequest.getEmail()));
 
         if (passwordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
             return jwtProvider.getJWTToken(user.getId());
@@ -82,19 +81,13 @@ public class UserServiceImpl implements UserService {
     public void sendOTPForRecover(UserRecoverAccountRequest userRecoverAccountRequest) {
         User user = userRepository.findByEmailAndIsDeletedFalse(userRecoverAccountRequest.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with this email: "
-                        + userRecoverAccountRequest.getEmail()));
+                                                                 + userRecoverAccountRequest.getEmail()));
 
         OTPSession otpSession = createOTPSession(user);
         otpSessionRepository.save(otpSession);
-        eventPublisher.publishEvent(buildOTPEvent(user, otpSession));
     }
 
-    private static OTPEvent buildOTPEvent(User user, OTPSession otpSession) {
-        return OTPEvent.builder()
-                .email(user.getEmail())
-                .otpCode(otpSession.getOtpCode())
-                .build();
-    }
+
 
     @Override
     public void recoverAccount(UserRecoverAccountOTPRequest userRecoverAccountOTPRequest) {

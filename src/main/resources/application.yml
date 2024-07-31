@@ -1,32 +1,32 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${LEARN_LINK_DB_HOST}:${LEARN_LINK_DB_PORT}/${LEARN_LINK_DB_NAME}?currentSchema=${LEARN_LINK_DB_SCHEMA}
-    username: ${LEARN_LINK_DB_USERNAME}
-    password: ${LEARN_LINK_DB_PASSWORD}
+    url: jdbc:postgresql://${LEARN_LINK_DB_HOST:localhost}:${LEARN_LINK_DB_PORT:5432}/${LEARN_LINK_DB_NAME:postgres}?currentSchema=${LEARN_LINK_DB_SCHEMA:public}
+    username: ${LEARN_LINK_DB_USERNAME:postgres}
+    password: ${LEARN_LINK_DB_PASSWORD:huseynderya}
   jpa:
     properties:
       hibernate:
         format_sql: true
-        default_schema: ${LEARN_LINK_DB_SCHEMA}
+        default_schema: ${LEARN_LINK_DB_SCHEMA:public}
     hibernate:
       ddl-auto: none
     open-in-view:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
-    default-schema: ${LEARN_LINK_DB_SCHEMA}
-    liquibase-schema: ${LEARN_LINK_DB_SCHEMA}
+    default-schema: ${LEARN_LINK_DB_SCHEMA:public}
+    liquibase-schema: ${LEARN_LINK_DB_SCHEMA:public}
     enabled: true
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${LEARN_LINK_EMAIL}
-    password: ${LEARN_LINK_EMAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: ${LEARN_LINK_EMAIL:}
+#    password: ${LEARN_LINK_EMAIL_PASSWORD}
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
 security:
   auth:
     whitelist: >
@@ -46,9 +46,9 @@ security:
       /api/v1/users/signin,
       /api/v1/users/signup
   jwt:
-    secret-key: ${LEARN_LINK_JWT_SECRET_KEY}
+    secret-key: ${LEARN_LINK_JWT_SECRET_KEY:test}
 
 
-model: ${LEARN_LINK_AI_MODEL}
-apiUrl: ${LEARN_LINK_AI_API_URL}
-apiKey: ${LEARN_LINK_AI_API_KEY}
+model: ${LEARN_LINK_AI_MODEL:test1}
+apiUrl: ${LEARN_LINK_AI_API_URL:test2}
+apiKey: ${LEARN_LINK_AI_API_KEY:test3}
